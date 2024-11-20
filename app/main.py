@@ -3,7 +3,7 @@ from app.api.routes import router
 
 app = FastAPI()
 
-app.include_router(router, prefix="/api", tags=["games"])
+app.include_router(router, prefix="/games", tags=["Games"])
 
 @app.get("/")
 async def read_root():

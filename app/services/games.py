@@ -1,24 +1,28 @@
 from app.core.dependencies import get_supabase_client
-from app.models.game import GameType, Game
+from app.models.game import *
+
+GAMES_METADATA_COLUMNS = "id, created_at, status, editor_id, game_type, stars"
 
 def get_game_types() -> list[GameType]:
     supabase = get_supabase_client()
-    response = supabase.table("game_types").select("*").execute()
-    return response.data
+    response = supabase.table("game-types").select("*").execute()
+    print(response)
+    return [GameType(**game_type) for game_type in response.data]
 
-def get_game_type_by_title(game_type_title: str) -> GameType:
+def get_active_games() -> list[GameMetadata]:
     supabase = get_supabase_client()
-    response = supabase.table("game_types").select("*").eq("title", game_type_title).execute()
-    return response.data[0]
-
-def get_games_by_type(game_type_title: str) -> list[Game]:
-    supabase = get_supabase_client()
-    game_type = get_game_type_by_title(game_type_title)
-    response = supabase.table("games").select("*").eq("game_type_id", game_type["id"]).execute()
-    return response.data
-
-def get_game_by_id(game_id: int) -> Game:
-    supabase = get_supabase_client()
-    response = supabase.table("games").select("*").eq("game_id", game_id).execute()
+    response = supabase.table("games").select(GAMES_METADATA_COLUMNS).eq("status", GameStatus.ACTIVE.value).execute()
     print(response.data)
-    return response.data[0]
+    return [GameMetadata(**game) for game in response.data]
+
+def get_active_games_by_type(game_type: str) -> list[GameMetadata]:
+    supabase = get_supabase_client()
+    response = supabase.table("games").select(GAMES_METADATA_COLUMNS).eq("game_type", game_type).eq("status", GameStatus.ACTIVE.value).execute()
+    return [GameMetadata(**game) for game in response.data]
+
+def get_game_by_id(game_type, game_id: int) -> Game | None:
+    supabase = get_supabase_client()
+    response = supabase.table("games").select("*").eq("game_type", game_type).eq("id", game_id).execute()
+    if len(response.data) == 0:
+        return None
+    return Game(**response.data[0])
