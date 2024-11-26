@@ -1,5 +1,5 @@
-from app.core.dependencies import get_supabase_client
-from app.models.game import *
+from core.dependencies import get_supabase_client
+from models.game import *
 
 GAMES_METADATA_COLUMNS = "id, created_at, status, editor_id, game_type, stars"
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-import app.services.games as GamesService
-from app.models.game import *
+import services.games as GamesService
+from models.game import *
 
 router = APIRouter()
 
