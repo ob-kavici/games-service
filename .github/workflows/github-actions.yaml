@@ -29,10 +29,11 @@ jobs:
 
     - name: Set up Kubeconfig
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
-        export KUBECONFIG=$(pwd)/kubeconfig
-      env:
-        KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
+        mkdir ${HOME}/.kube/config
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ${HOME}/.kube/config
+  	    cat ${HOME}/.kube/config
+    - name: Use context
+      run: kubectl config use-context obKaviciAKS
 
     # - name: Apply Kubernetes Secret
     #   run: |
