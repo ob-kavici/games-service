@@ -30,7 +30,7 @@ jobs:
     - name: Set up Kubeconfig
       run: |
         mkdir ${HOME}/.kube/config
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ${HOME}/.kube/config
+        echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
   	    cat ${HOME}/.kube/config
     - name: Use context
       run: kubectl config use-context obKaviciAKS
