@@ -35,6 +35,7 @@ jobs:
 
     - name: Apply Kubernetes Secret
       run: |
+        kubectl delete secret games-service-secrets || true
         kubectl create secret generic games-service-secrets \
           --from-literal=SUPABASE_URL=$SUPABASE_URL \
           --from-literal=SUPABASE_KEY=$SUPABASE_KEY
