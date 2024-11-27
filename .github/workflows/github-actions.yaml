@@ -33,15 +33,15 @@ jobs:
         export KUBECONFIG=$(pwd)/kubeconfig
         kubectl get pods
 
-    - name: Apply Kubernetes Secret
-      run: |
-        kubectl delete secret games-service-secrets || true
-        kubectl create secret generic games-service-secrets \
-          --from-literal=SUPABASE_URL=$SUPABASE_URL \
-          --from-literal=SUPABASE_KEY=$SUPABASE_KEY
-      env:
-        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    # - name: Apply Kubernetes Secret
+    #   run: |
+    #     kubectl delete secret games-service-secrets || true
+    #     kubectl create secret generic games-service-secrets \
+    #       --from-literal=SUPABASE_URL=$SUPABASE_URL \
+    #       --from-literal=SUPABASE_KEY=$SUPABASE_KEY
+    #   env:
+    #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+    #     SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
     - name: Deploy to Kubernetes
       run: |
