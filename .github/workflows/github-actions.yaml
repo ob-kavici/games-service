@@ -35,12 +35,11 @@ jobs:
         version: 'latest'
 
     - name: Authenticate with Kubernetes
+      uses: actions-hub/kubectl@master
       env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}
-      run: |
-        echo "$KUBECONFIG" | base64 -d > kubeconfig
-        export KUBECONFIG=kubeconfig
-        kubectl cluster-info
+        KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      with:
+        args: get pods
 
     - name: Debug Kubernetes Cluster Connection
       run: |
