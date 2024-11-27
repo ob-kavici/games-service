@@ -29,7 +29,7 @@ jobs:
 
     - name: Set up Kubeconfig
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
         kubectl get pods
 
