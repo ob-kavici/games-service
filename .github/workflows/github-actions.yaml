@@ -31,7 +31,8 @@ jobs:
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
-        kubectl get pods
+      env:
+        KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
 
     # - name: Apply Kubernetes Secret
     #   run: |
