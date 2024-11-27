@@ -44,7 +44,7 @@ jobs:
 
     - name: Apply Kubernetes Secret
       run: |
-        kubectl create secret generic my-microservice-secrets \
+        kubectl create secret generic games-service-secrets \
           --from-literal=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
           --from-literal=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
 
