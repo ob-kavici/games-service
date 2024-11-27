@@ -41,15 +41,15 @@ jobs:
       with:
         args: get pods
 
-    - name: Debug Kubernetes Cluster Connection
-      run: |
-        kubectl get nodes
-        kubectl get namespaces
+    # - name: Debug Kubernetes Cluster Connection
+    #   run: |
+    #     kubectl get nodes
+    #     kubectl get namespaces
 
-    - name: Debug Secrets
-      run: |
-        echo "SUPABASE_URL is set: ${ { secrets.SUPABASE_URL }+yes }"
-        echo "SUPABASE_KEY is set: ${ { secrets.SUPABASE_KEY }+yes }"
+    # - name: Debug Secrets
+    #   run: |
+    #     echo "SUPABASE_URL is set: ${ { secrets.SUPABASE_URL }+yes }"
+    #     echo "SUPABASE_KEY is set: ${ { secrets.SUPABASE_KEY }+yes }"
 
     - name: Apply Kubernetes Secret
       run: |
