@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 
 class GameStatus(str, Enum):
@@ -10,6 +10,8 @@ class GameStatus(str, Enum):
 
 class GameType(BaseModel):
     id: str
+    title: str
+    is_active: bool
     
 class GameMetadata(BaseModel):
     id: int
@@ -18,6 +20,7 @@ class GameMetadata(BaseModel):
     editor_id: Optional[str] = None
     stars: int
     game_type: str
+    game_date: Optional[date] = None
     
-class Game(GameMetadata):
+class GameData(BaseModel):
     game_data: Optional[dict] = None

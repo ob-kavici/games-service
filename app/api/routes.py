@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-import services.games as GamesService
-from models.game import *
+import app.services.games as GamesService
+from app.models.game import *
 
 router = APIRouter()
 
@@ -16,7 +16,11 @@ async def get_active_games() -> list[GameMetadata]:
 async def get_active_games_by_type(game_type: str) -> list[GameMetadata]:
     return GamesService.get_active_games_by_type(game_type)
 
+@router.get("/{game_type}/daily")
+async def get_daily_game_by_type(game_type: str) -> GameMetadata:
+    return GamesService.get_daily_game_by_type(game_type)
+
 # TODO: Proper error handling
 @router.get("/{game_type}/{game_id}")
-async def get_game_by_id(game_type: str, game_id: int) -> Game | None:
-    return GamesService.get_game_by_id(game_type, game_id)
+async def get_game_data_by_id(game_type: str, game_id: int) -> GameData | None:
+    return GamesService.get_game_data_by_id(game_type, game_id)
