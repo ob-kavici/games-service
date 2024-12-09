@@ -15,10 +15,10 @@ spec:
         app: games-service
     spec:
       containers:
-      - name: games-service
-        image: kofolmarko/games-service:latest
-        ports:
-        - containerPort: 8001
-        envFrom:
-        - secretRef:
-            name: games-service-secrets
+        - name: games-service
+          image: kofolmarko/games-service:latest
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - secretRef:
+                name: games-service-secrets

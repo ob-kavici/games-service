@@ -6,7 +6,7 @@ spec:
   selector:
     app: games-service
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8001
+    - protocol: TCP
+      port: 80
+      targetPort: 8001
   type: ClusterIP
