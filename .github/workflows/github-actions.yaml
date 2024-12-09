@@ -1,4 +1,4 @@
-name: Deploy Microservice to Kubernetes
+name: Deploy games-service to AKS
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: azure
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -31,19 +31,16 @@ jobs:
       run: |
         mkdir ${HOME}/.kube
         echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
-        cat ${HOME}/.kube/config
+
     - name: Use context
       run: kubectl config use-context obKaviciAKS
 
-    # - name: Apply Kubernetes Secret
-    #   run: |
-    #     kubectl delete secret games-service-secrets || true
-    #     kubectl create secret generic games-service-secrets \
-    #       --from-literal=SUPABASE_URL=$SUPABASE_URL \
-    #       --from-literal=SUPABASE_KEY=$SUPABASE_KEY
-    #   env:
-    #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-    #     SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+    - name: Apply Kubernetes Secret
+    run: |
+      kubectl create secret generic games-service-secrets \
+      --from-literal=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+      --from-literal=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
+      --dry-run=client -o yaml | kubectl apply -f -
 
     - name: Deploy to Kubernetes
       run: |
