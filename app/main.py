@@ -5,20 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "http://127.0.0.1:5173",
-    "http://frontend"
+    # TODO change the only allowed origin to the frontend
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(router, prefix="/games", tags=["Games"])
+app.include_router(router, prefix="/games", tags=["games"])
 
 @app.get("/")
 async def read_root():
-    return {"service": "games-hub"}
+    return {"service": "games-service", "status": "running"}

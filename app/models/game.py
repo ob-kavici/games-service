@@ -11,6 +11,7 @@ class GameStatus(str, Enum):
 class GameType(BaseModel):
     id: str
     title: str
+    description: str
     is_active: bool
     
 class GameMetadata(BaseModel):
@@ -19,8 +20,8 @@ class GameMetadata(BaseModel):
     status: GameStatus
     editor_id: Optional[str] = None
     stars: int
-    game_type: str
+    game_type_id: str
     game_date: Optional[date] = None
     
-class GameData(BaseModel):
+class Game(GameMetadata):
     game_data: Optional[dict] = None

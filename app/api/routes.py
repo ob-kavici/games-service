@@ -1,26 +1,22 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from typing import Optional
 import services.games as GamesService
 from models.game import *
 
 router = APIRouter()
 
 @router.get("/game-types")
-async def get_game_types() -> list[GameType]:
-    return GamesService.get_game_types()
+async def get_game_types(game_type_id: Optional[str] = Query(None)) -> list[GameType] | GameType:
+    return GamesService.get_game_types(game_type_id)
 
-@router.get("")
-async def get_active_games() -> list[GameMetadata]:
-    return GamesService.get_active_games()
+@router.get("/")
+async def get_active_games(game_type_id: Optional[str] = Query(None)) -> list[GameMetadata]:
+    return GamesService.get_active_games(game_type_id)
 
-@router.get("/{game_type}")
-async def get_active_games_by_type(game_type: str) -> list[GameMetadata]:
-    return GamesService.get_active_games_by_type(game_type)
+@router.get("/{game_type_id}/daily")
+async def get_daily_game(game_type_id: str) -> Game:
+    return GamesService.get_daily_game(game_type_id)
 
-@router.get("/{game_type}/daily")
-async def get_daily_game_by_type(game_type: str) -> GameMetadata:
-    return GamesService.get_daily_game_by_type(game_type)
-
-# TODO: Proper error handling
-@router.get("/{game_type}/{game_id}")
-async def get_game_data_by_id(game_type: str, game_id: int) -> GameData | None:
-    return GamesService.get_game_data_by_id(game_type, game_id)
+@router.get("/{game_type_id}/{game_id}")
+async def get_game(game_type_id: str, game_id: int) -> Game | None:
+    return GamesService.get_game(game_type_id, game_id)
