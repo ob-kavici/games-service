@@ -6,9 +6,13 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 8001
+
+ingress:
+  enabled: true
+  host: api.ob-kavici.si
 
 env:
   secrets:
