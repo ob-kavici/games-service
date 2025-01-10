@@ -1,0 +1,27 @@
+replicaCount: 1
+
+image:
+  repository: kofolmarko/games-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8001
+
+env:
+  secrets:
+    name: games-service-secrets
+
+probes:
+  liveness:
+    path: /health/liveness
+    port: 8001
+    initialDelaySeconds: 3
+    periodSeconds: 120
+  readiness:
+    path: /health/readiness
+    port: 8001
+    initialDelaySeconds: 5
+    periodSeconds: 3600

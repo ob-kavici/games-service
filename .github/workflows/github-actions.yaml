@@ -49,7 +49,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t kofolmarko/games-service .
+          docker build -t kofolmarko/games-service . -f ./Dockerfile
           docker push kofolmarko/games-service:latest
 
       - name: Set up Kubeconfig
@@ -57,17 +57,10 @@ jobs:
           mkdir ${HOME}/.kube
           echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
 
-      - name: Use context
-        run: kubectl config use-context obKaviciAKS
+      - name: Install Helm
+        run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-      - name: Apply Kubernetes Secret
+      - name: Deploy Helm Chart
         run: |
-          kubectl create secret generic games-service-secrets \
-          --from-literal=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-          --from-literal=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
-          --dry-run=client -o yaml | kubectl apply -f -
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/games-service
+          helm upgrade --install games-service ./charts \
+            --set image.tag=latest
