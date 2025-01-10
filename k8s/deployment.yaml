@@ -22,3 +22,15 @@ spec:
           envFrom:
             - secretRef:
                 name: games-service-secrets
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: 8001
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 15
