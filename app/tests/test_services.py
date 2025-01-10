@@ -1,4 +1,4 @@
-from app.services.games import get_active_games, get_daily_game
+from services.games import get_active_games, get_daily_game
 from unittest.mock import patch
 
 @patch("app.services.games.query_supabase")
