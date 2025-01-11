@@ -4,7 +4,7 @@ from core.dependencies import get_supabase_client
 from models.game import *
 from models.gamestate import *
 from typing import Optional
-from datetime import datetime, date
+from datetime import date
 
 GAMES_METADATA_COLUMNS = "id, created_at, status, editor_id, stars, game_type_id, game_date"
 
