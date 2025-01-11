@@ -66,9 +66,9 @@ jobs:
           TAG=$(git rev-parse --short HEAD)
           # Determine environment
           if [[ $GITHUB_REF == "refs/heads/main" ]]; then
-            VALUES_FILE="values.prod.yaml"
+            VALUES_FILE="./charts/values.prod.yaml"
           elif [[ $GITHUB_REF == "refs/heads/develop" ]]; then
-            VALUES_FILE="values.dev.yaml"
+            VALUES_FILE="./charts/values.dev.yaml"
           else
             echo "Unsupported branch. Exiting."
             exit 1
@@ -77,3 +77,4 @@ jobs:
           helm upgrade --install games-service ./charts \
             --values $VALUES_FILE \
             --set image.tag=$TAG
+
