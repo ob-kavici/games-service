@@ -31,3 +31,6 @@ def get_supabase_client(auth: dict = None) -> Client:
             raise HTTPException(status_code=500, detail=f"Failed to set session: {e}")
     
     return supabase
+
+def get_rabbitmq_url():
+    return f"amqp://{settings.RABBITMQ_USER}:{settings.RABBITMQ_PASS}@{settings.RABBITMQ_HOST}/"

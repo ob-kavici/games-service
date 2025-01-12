@@ -1,10 +1,16 @@
+import asyncio
+import json
 from fastapi import HTTPException
 from postgrest.exceptions import APIError
-from core.dependencies import get_supabase_client
+from core.dependencies import *
 from models.game import *
 from models.gamestate import *
 from typing import Optional
 from datetime import date
+import aio_pika
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 GAMES_METADATA_COLUMNS = "id, created_at, status, editor_id, stars, game_type_id, game_date"
 
@@ -98,6 +104,8 @@ def update_game_state(game_state: dict, auth: dict) -> GameState | None:
                 .execute()
             )
             print(response)
+            # Publish event to RabbitMQ
+            asyncio.create_task(publish_event(GameState(**response.data[0])))
             return GameState(**response.data[0])
         except APIError as e:
             raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
@@ -112,6 +120,20 @@ def update_game_state(game_state: dict, auth: dict) -> GameState | None:
             .execute()
         )
         print(response)
+        # Publish event to RabbitMQ
+        asyncio.create_task(publish_event(GameState(**response.data[0])))
         return GameState(**response.data[0])
     except APIError as e:
         raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
+
+async def publish_event(event_data: GameState):
+    try:
+        connection = await aio_pika.connect_robust(get_rabbitmq_url())
+        async with connection:
+            channel = await connection.channel()
+            await channel.default_exchange.publish(
+                aio_pika.Message(body=json.dumps(event_data.model_dump(), default=str).encode()),
+                routing_key="game.states",
+            )
+    except Exception as e:
+        logging.error(f"Failed to publish event: {str(e)}")
