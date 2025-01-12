@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
 
 jobs:
   test:
@@ -32,8 +33,6 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    # needs: test
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,7 +48,9 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t kofolmarko/games-service .
+          TAG=$(git rev-parse --short HEAD)
+          docker build -t kofolmarko/games-service:$TAG -t kofolmarko/games-service:latest .
+          docker push kofolmarko/games-service:$TAG
           docker push kofolmarko/games-service:latest
 
       - name: Set up Kubeconfig
@@ -57,17 +58,23 @@ jobs:
           mkdir ${HOME}/.kube
           echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
 
-      - name: Use context
-        run: kubectl config use-context obKaviciAKS
+      - name: Install Helm
+        run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-      - name: Apply Kubernetes Secret
+      - name: Deploy Helm Chart
         run: |
-          kubectl create secret generic games-service-secrets \
-          --from-literal=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-          --from-literal=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
-          --dry-run=client -o yaml | kubectl apply -f -
+          TAG=$(git rev-parse --short HEAD)
+          # Determine environment
+          if [[ $GITHUB_REF == "refs/heads/main" ]]; then
+            VALUES_FILE="./charts/values.prod.yaml"
+          elif [[ $GITHUB_REF == "refs/heads/develop" ]]; then
+            VALUES_FILE="./charts/values.dev.yaml"
+          else
+            echo "Unsupported branch. Exiting."
+            exit 1
+          fi
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/games-service
+          helm upgrade --install games-service ./charts \
+            --values $VALUES_FILE \
+            --set image.tag=$TAG
+

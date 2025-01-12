@@ -3,11 +3,12 @@ from api.routes import router
 from fastapi.middleware.cors import CORSMiddleware
 from core.dependencies import get_supabase_client
 from models.errors import *
+from pydantic import BaseModel
 
 app = FastAPI()
 
 origins = [
-    # TODO change the only allowed origin to the frontend
+    # TODO: Restrict to specific frontend domains
 ]
 
 app.add_middleware(
@@ -20,15 +21,18 @@ app.add_middleware(
 
 app.include_router(router, prefix="/games", tags=["games"])
 
-@app.get("/")
+@app.get("/", responses={200: {"model": dict}})
 async def read_root():
     return {"service": "games-service"}
 
-@app.get("/health/liveness")
+@app.get("/health/liveness", responses={200: {"model": dict}})
 async def liveness():
     return {"status": "alive"}
 
-@app.get("/health/readiness")
+@app.get("/health/readiness", responses={
+    200: {"model": dict},
+    500: {"model": InternalServerError}
+})
 async def readiness():
     try:
         supabase = get_supabase_client()
