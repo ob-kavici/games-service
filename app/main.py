@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from api.routes import router
 from fastapi.middleware.cors import CORSMiddleware
 from core.dependencies import get_supabase_client
+from models.errors import *
 
 app = FastAPI()
 

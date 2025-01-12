@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: kofolmarko/games-service
+  tag: latest
+  pullPolicy: Always  # Ensures the latest image is always pulled in development.
+
+service:
+  type: ClusterIP
+  port: 8001
+  targetPort: 8001
+
+ingress:
+  enabled: true
+  host: dev-api.ob-kavici.si  # Use a different host for the dev environment.
+  path: /games
+
+env:
+  secrets:
+    name: games-service-secrets-dev  # Use a separate secret for the dev environment, if needed.
+
+probes:
+  liveness:
+    path: /health/liveness
+    port: 8001
+    initialDelaySeconds: 3
+    periodSeconds: 120
+  readiness:
+    path: /health/readiness
+    port: 8001
+    initialDelaySeconds: 5
+    periodSeconds: 3600

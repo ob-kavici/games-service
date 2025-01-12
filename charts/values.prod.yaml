@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: kofolmarko/games-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8001
+  targetPort: 8001
+
+ingress:
+  enabled: true
+  host: api.ob-kavici.si
+  path: /games
+
+env:
+  secrets:
+    name: games-service-secrets
+
+probes:
+  liveness:
+    path: /health/liveness
+    port: 8001
+    initialDelaySeconds: 3
+    periodSeconds: 120
+  readiness:
+    path: /health/readiness
+    port: 8001
+    initialDelaySeconds: 5
+    periodSeconds: 3600
