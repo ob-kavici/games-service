@@ -12,8 +12,8 @@ service:
 
 ingress:
   enabled: true
-  host: api.ob-kavici.si
-  path: /games
+  host: games.ob-kavici.si
+  path: /
 
 env:
   secrets:

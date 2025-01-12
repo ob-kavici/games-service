@@ -12,8 +12,8 @@ service:
 
 ingress:
   enabled: true
-  host: dev-api.ob-kavici.si  # Use a different host for the dev environment.
-  path: /games
+  host: dev-games.ob-kavici.si  # Use a different host for the dev environment.
+  path: /
 
 env:
   secrets:
