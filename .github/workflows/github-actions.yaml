@@ -61,6 +61,16 @@ jobs:
       - name: Install Helm
         run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+      - name: Create Kubernetes Secret
+        run: |
+          kubectl create secret generic games-service-secrets \
+            --from-literal=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --from-literal=SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} \
+            --from-literal=RABBITMQ_USER=${{ secrets.RABBITMQ_USER }} \
+            --from-literal=RABBITMQ_PASS=${{ secrets.RABBITMQ_PASS }} \
+            --from-literal=RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy Helm Chart
         run: |
           TAG=$(git rev-parse --short HEAD)
@@ -77,4 +87,3 @@ jobs:
           helm upgrade --install games-service ./charts \
             --values $VALUES_FILE \
             --set image.tag=$TAG
-
