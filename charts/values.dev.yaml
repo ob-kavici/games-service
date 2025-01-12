@@ -30,3 +30,6 @@ probes:
     port: 8001
     initialDelaySeconds: 5
     periodSeconds: 3600
+
+metrics:
+  path: /metrics

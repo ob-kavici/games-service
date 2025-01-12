@@ -5,3 +5,4 @@ pydantic-settings
 supabase
 pytest
 aio-pika
+prometheus-client
